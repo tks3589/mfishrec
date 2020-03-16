@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/button_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/itemBackground"
@@ -27,6 +28,7 @@
         android:background="@android:color/black" />
 
     <LinearLayout
+        android:id="@+id/button_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/itemBackground"
