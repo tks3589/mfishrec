@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">mfishrec</string>
+    <string name="settings">settings</string>
+    <array name="MainPageTitle">
+        <item>Function</item>
+        <item>Record</item>
+    </array>
+</resources>

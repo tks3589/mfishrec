@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">市場魚類辨識</string>
+    <array name="MainPageTitle">
+        <item>功能</item>
+        <item>辨識紀錄</item>
+    </array>
+    <string name="settings">設定</string>
+</resources>
