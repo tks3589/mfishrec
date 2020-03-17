@@ -1,11 +1,13 @@
 package com.example.mfishrec
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +25,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-
+            R.id.settings -> {
+                val mode = arrayOf("裁剪辨識","直接辨識")
+                var alertBuilder = AlertDialog.Builder(this)
+                alertBuilder.setTitle("模式")
+                alertBuilder
+                    .setSingleChoiceItems(mode,0,DialogInterface.OnClickListener { dialogInterface, i ->
+                        Log.d("mode",i.toString())
+                        dialogInterface.dismiss()
+                    })
+                    .show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

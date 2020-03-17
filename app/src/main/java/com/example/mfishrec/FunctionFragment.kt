@@ -1,6 +1,7 @@
 package com.example.mfishrec
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.CAMERA
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -24,6 +25,8 @@ class FunctionFragment : Fragment(){
     companion object {
         private const val REQUEST_READ= 5566
         private const val GET_GALLERY= 7788
+        private const val REQUEST_CAMERA = 4455
+        private const val GET_PHOTO = 3344
     }
 
     override fun onCreateView(
@@ -38,7 +41,7 @@ class FunctionFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_camera.setOnClickListener {
-
+            openCameraX()
         }
         button_gallery.setOnClickListener {
             pickFromGallery()
@@ -56,6 +59,13 @@ class FunctionFragment : Fragment(){
                 }
             }else if (requestCode == UCrop.REQUEST_CROP) {
                 handleCropResult(data!!)
+            }else if(requestCode == GET_PHOTO){
+                val photoUri = data?.data
+                if(photoUri!=null){
+                    startCrop(photoUri)
+                }else{
+                    Toast.makeText(context,"Cannot retrieve camera photo image",Toast.LENGTH_SHORT).show()
+                }
             }
         }
         if (resultCode == UCrop.RESULT_ERROR) {
@@ -89,6 +99,20 @@ class FunctionFragment : Fragment(){
         ucrop.start(activity!!)
     }
 
+    fun openCameraX(){
+        if(context!!.hasPermission(CAMERA)){
+            startActivityForResult(Intent(context,CameraxActivity::class.java), GET_PHOTO)
+        }else{
+            requestPermissions(
+                arrayOf(
+                    CAMERA
+                )
+                ,
+                REQUEST_CAMERA
+            )
+        }
+    }
+
     fun pickFromGallery(){
         if(context!!.hasPermission(READ_EXTERNAL_STORAGE)){
             var intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -120,8 +144,8 @@ class FunctionFragment : Fragment(){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == REQUEST_READ && context!!.hasPermission(READ_EXTERNAL_STORAGE)){
             pickFromGallery()
-        }else{
-
+        }else if(requestCode == REQUEST_CAMERA && context!!.hasPermission(CAMERA)){
+            openCameraX()
         }
     }
 }
