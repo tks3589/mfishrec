@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.fragment_function.*
+import java.io.File
 
 class FunctionFragment : Fragment(){
 
@@ -47,12 +50,43 @@ class FunctionFragment : Fragment(){
             if(requestCode == GET_GALLERY){
                 val selectedUri = data?.data
                 if(selectedUri!=null){
-                    Toast.makeText(context,selectedUri.toString(),Toast.LENGTH_SHORT).show()
+                    startCrop(selectedUri)
                 }else{
                     Toast.makeText(context,"Cannot retrieve selected image",Toast.LENGTH_SHORT).show()
                 }
+            }else if (requestCode == UCrop.REQUEST_CROP) {
+                handleCropResult(data!!)
             }
         }
+        if (resultCode == UCrop.RESULT_ERROR) {
+            handleCropError(data!!)
+        }
+    }
+
+    fun handleCropError(result: Intent){
+        var cropError = UCrop.getError(result)
+        if(cropError!=null){
+            Toast.makeText(context,cropError.message,Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(context,"Unexpected error",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun handleCropResult(result:Intent){
+        var resultUri = UCrop.getOutput(result)
+        if(resultUri!=null){
+            CropResultActivity.startWithUri(context!!,resultUri)
+        }else{
+            Toast.makeText(context,"Cannot retrieve cropped image",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun startCrop(uri:Uri){
+        var ucrop = UCrop.of(uri,Uri.fromFile(File(context!!.cacheDir,"SampleCropImage.jpg")))
+        var options = UCrop.Options()
+        options.setFreeStyleCropEnabled(true)
+        ucrop.withOptions(options)
+        ucrop.start(activity!!)
     }
 
     fun pickFromGallery(){

@@ -5,4 +5,5 @@
         <item>Function</item>
         <item>Record</item>
     </array>
+    <string name="format_crop_result_d_d">Crop Result (%1$dx%2$d)</string>
 </resources>
