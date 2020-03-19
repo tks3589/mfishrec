@@ -38,7 +38,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(':ucrop')
+
+    //camerax
     def camerax_version = '1.0.0-alpha06'
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
+
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
 }

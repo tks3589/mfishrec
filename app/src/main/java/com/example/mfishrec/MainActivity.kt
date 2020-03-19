@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
                 var alertBuilder = AlertDialog.Builder(this)
                 alertBuilder.setTitle("模式")
                 alertBuilder
-                    .setSingleChoiceItems(mode,0,DialogInterface.OnClickListener { dialogInterface, i ->
+                    .setSingleChoiceItems(mode,0) { dialogInterface, i ->
                         Log.d("mode",i.toString())
                         dialogInterface.dismiss()
-                    })
+                    }
                     .show()
             }
         }
