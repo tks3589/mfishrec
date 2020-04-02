@@ -46,6 +46,9 @@ class FunctionFragment : Fragment(){
         button_gallery.setOnClickListener {
             pickFromGallery()
         }
+        button_guide.setOnClickListener {
+            openGuide()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -97,6 +100,14 @@ class FunctionFragment : Fragment(){
         options.setFreeStyleCropEnabled(true)
         ucrop.withOptions(options)
         ucrop.start(activity!!)
+    }
+
+    fun openGuide(){
+        var bundle = Bundle()
+        bundle.putString("type","guide")
+        var intent = Intent(context,ShowActivity::class.java)
+        intent.putExtra("bundle",bundle)
+        startActivity(intent)
     }
 
     fun openCameraX(){

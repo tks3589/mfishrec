@@ -35,7 +35,7 @@ class CropResultActivity : AppCompatActivity() {
     companion object {
         fun startWithUri(context: Context,uri: Uri){
             var intent = Intent(context,CropResultActivity::class.java)
-            intent.setData(uri)
+            intent.data = uri
             context.startActivity(intent)
         }
     }
@@ -44,7 +44,7 @@ class CropResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crop_result)
 
-        var uri = intent.getData()
+        var uri = intent.data
         if(uri!=null){
             try{
                 callbackUri = uri
@@ -65,7 +65,7 @@ class CropResultActivity : AppCompatActivity() {
         var actionBar = supportActionBar
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setTitle(getString(R.string.format_crop_result_d_d,options.outWidth,options.outHeight))
+            actionBar.title = getString(R.string.format_crop_result_d_d,options.outWidth,options.outHeight)
         }
 
     }
@@ -113,24 +113,46 @@ class CropResultActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 runOnUiThread {
                     dialog?.dismiss()
+
                     var responseData = response.body?.string()
                     Log.d("OK:",responseData)
                     val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
                     val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(responseData, listType)
+
                     var alertBuilder = AlertDialog.Builder(this@CropResultActivity)
-                    val sb = StringBuffer()
-                    for (obj in responseDataList){
-                        sb.append("No: ${obj.rank} (${obj.name}) \n")
-                        sb.append("Score: ${obj.score} \n\n")
+                    alertBuilder.setCancelable(false)
+                    alertBuilder.setPositiveButton("OK") { dialogInterface, _ ->
+                        dialogInterface.dismiss()
                     }
-                    alertBuilder.setMessage(sb.toString())
-                    alertBuilder.show()
+                    var dataArr = arrayOfNulls<String>(responseDataList.size)
+                    for(i in dataArr.indices){
+                        var model = responseDataList[i]
+                        dataArr[i] = "No: ${model.rank} (${model.name}) \n Score: ${model.score} \n"
+                    }
+                    alertBuilder.setItems(dataArr,null)
+
+                    var alert = alertBuilder.create()
+                    alert.listView.setOnItemClickListener { _, _, i, _ ->
+                        var model = responseDataList[i]
+                        Log.d("alert",dataArr[i])
+                        var intent = Intent(this@CropResultActivity,ShowActivity::class.java)
+                        var bundle = Bundle()
+                        bundle.putString("type","crop_result")
+                        bundle.putInt("rank",model.rank)
+                        bundle.putString("name",model.name)
+                        bundle.putFloat("score",model.score)
+                        intent.putExtra("bundle",bundle)
+                        startActivity(intent)
+                    }
+
+                    alert.show()
+
                 }
             }
         })
     }
 
-    fun resizeBitmap(bitmap:Bitmap,rwidth:Int,rheight:Int) : Bitmap{
+    private fun resizeBitmap(bitmap:Bitmap, rwidth:Int, rheight:Int) : Bitmap{
         val bwidth = bitmap.width
         val bheight = bitmap.height
         var scaleWidth = rwidth.toFloat() / bwidth
