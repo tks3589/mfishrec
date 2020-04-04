@@ -83,11 +83,12 @@ class RecordFragment : Fragment() {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             when(holder){
                 is RecordHolder -> {
-                    holder.imageView.setImageURI(Uri.parse(records?.get(position)?.imguri))
-                    holder.dateText.text = records?.get(position)?.date
-                    holder.timeText.text = records?.get(position)?.time
+                    var model = records?.get(position)
+                    holder.imageView.setImageURI(Uri.parse(model?.imguri))
+                    holder.dateText.text = model?.date
+                    holder.timeText.text = model?.time
                     holder.layout.setOnClickListener {
-                        openRecord()
+                        model?.let { openRecord(it) }
                     }
                 }
             }
@@ -100,9 +101,11 @@ class RecordFragment : Fragment() {
                 return TYPE_NORMAL
         }
 
-        private fun openRecord(){
+        private fun openRecord(record:Record){
             var bundle = Bundle()
             bundle.putString("type","record")
+            bundle.putSerializable("record",record)
+
             var intent = Intent(context,ShowActivity::class.java)
             intent.putExtra("bundle",bundle)
             startActivity(intent)
