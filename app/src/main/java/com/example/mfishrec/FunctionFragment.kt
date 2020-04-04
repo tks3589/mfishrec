@@ -27,6 +27,9 @@ class FunctionFragment : Fragment(){
         private const val GET_GALLERY= 7788
         private const val REQUEST_CAMERA = 4455
         private const val GET_PHOTO = 3344
+        val instance : FunctionFragment by lazy {
+            FunctionFragment()
+        }
     }
 
     override fun onCreateView(
@@ -95,7 +98,7 @@ class FunctionFragment : Fragment(){
     }
 
     fun startCrop(uri:Uri){
-        var ucrop = UCrop.of(uri,Uri.fromFile(File(context!!.cacheDir,"SampleCropImage.jpg")))
+        var ucrop = UCrop.of(uri,Uri.fromFile(File(context!!.cacheDir,"Crop_${System.currentTimeMillis()}.jpg")))
         var options = UCrop.Options()
         options.setFreeStyleCropEnabled(true)
         ucrop.withOptions(options)

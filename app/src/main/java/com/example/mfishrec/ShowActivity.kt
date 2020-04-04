@@ -21,10 +21,17 @@ class ShowActivity : AppCompatActivity() {
         var actionBar = supportActionBar
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true)
-            if(type.equals("guide"))
-                actionBar.title = "guide"
-            else
-                actionBar.title = "$rank , $name , $score"
+            when(type){
+                "guide" -> {
+                    actionBar.title = "guide"
+                }
+                "record" -> {
+                    actionBar.title = "record"
+                }
+                else -> {
+                    actionBar.title = "$rank , $name , $score"
+                }
+            }
         }
     }
 

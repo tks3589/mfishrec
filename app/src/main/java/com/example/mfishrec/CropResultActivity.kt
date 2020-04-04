@@ -17,6 +17,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.mfishrec.data.RecDatabase
+import com.example.mfishrec.data.Record
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_crop_result.*
@@ -25,7 +27,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class CropResultActivity : AppCompatActivity() {
 
@@ -78,7 +83,7 @@ class CropResultActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if(item?.itemId == R.id.menu_upload){
             dialog = ProgressDialog.show(this@CropResultActivity,"辨識中","請稍候...")
-            callbackUri?.let { Thread(Runnable { uploadImg(it) }).start() }
+            callbackUri?.let { Thread { uploadImg(it) }.start() }
         }else if(item?.itemId == android.R.id.home){
             onBackPressed()
         }
@@ -118,6 +123,7 @@ class CropResultActivity : AppCompatActivity() {
                     Log.d("OK:",responseData)
                     val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
                     val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(responseData, listType)
+                    insertRecord()
 
                     var alertBuilder = AlertDialog.Builder(this@CropResultActivity)
                     alertBuilder.setCancelable(false)
@@ -150,6 +156,17 @@ class CropResultActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun insertRecord(){
+        Thread {
+            val database = RecDatabase.getInstance(this)
+            val sdf_date = SimpleDateFormat("yyyy/MM/dd")
+            val sdf_time = SimpleDateFormat("HH:mm:ss")
+            val record = Record(callbackUri!!.toString(), sdf_date.format(Date()), sdf_time.format(Date()))
+            database?.recordDao()?.insert(record)
+            RecordFragment.instance.loadDB()
+        }.start()
     }
 
     private fun resizeBitmap(bitmap:Bitmap, rwidth:Int, rheight:Int) : Bitmap{
