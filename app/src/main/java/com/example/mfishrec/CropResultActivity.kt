@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
+import com.example.mfishrec.model.ResponseModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_crop_result.*

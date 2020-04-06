@@ -1,4 +1,4 @@
-package com.example.mfishrec
+package com.example.mfishrec.model
 
 data class ResponseModel(
     val rank: Int,
