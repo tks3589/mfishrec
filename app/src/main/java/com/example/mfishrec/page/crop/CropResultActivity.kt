@@ -1,4 +1,4 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.crop
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -17,9 +17,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.mfishrec.R
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
 import com.example.mfishrec.model.ResponseModel
+import com.example.mfishrec.page.container.ShowActivity
+import com.example.mfishrec.page.main.RecordFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_crop_result.*
@@ -40,7 +43,7 @@ class CropResultActivity : AppCompatActivity() {
 
     companion object {
         fun startWithUri(context: Context,uri: Uri){
-            var intent = Intent(context,CropResultActivity::class.java)
+            var intent = Intent(context, CropResultActivity::class.java)
             intent.data = uri
             context.startActivity(intent)
         }
@@ -142,7 +145,8 @@ class CropResultActivity : AppCompatActivity() {
                     alert.listView.setOnItemClickListener { _, _, i, _ ->
                         var model = responseDataList[i]
                         Log.d("alert",dataArr[i])
-                        var intent = Intent(this@CropResultActivity,ShowActivity::class.java)
+                        var intent = Intent(this@CropResultActivity,
+                            ShowActivity::class.java)
                         var bundle = Bundle()
                         bundle.putString("type","crop_result")
                         bundle.putInt("rank",model.rank)

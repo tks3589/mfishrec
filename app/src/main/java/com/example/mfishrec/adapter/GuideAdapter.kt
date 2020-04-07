@@ -1,5 +1,7 @@
 package com.example.mfishrec.adapter
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.mfishrec.R
+import com.example.mfishrec.page.container.ShowDetailActivity
 import com.example.mfishrec.model.GuideModel
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.guide_item.view.*
+import kotlinx.android.synthetic.main.item_guide.view.*
 
 class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecyclerAdapter<GuideModel,GuideAdapter.GuideHolder>(options){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideHolder {
-        return GuideHolder(LayoutInflater.from(parent.context).inflate(R.layout.guide_item,parent,false))
+        return GuideHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_guide,parent,false))
     }
 
     override fun onBindViewHolder(holder: GuideHolder, position: Int, model: GuideModel) {
@@ -47,18 +50,22 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
             showmoreButton.setOnClickListener {
                 val items = arrayOf("詳細解說","公開資料價格","推薦料理法")
                 val dialog_list = AlertDialog.Builder(itemView.context)
+                var bundle = Bundle()
                 dialog_list.setItems(items) { dialogInterface, i ->
                     when(i){
                         0 -> {
-
+                            bundle.putString("type","description")
                         }
                         1 -> {
-
+                            bundle.putString("type","price")
                         }
                         else -> {
-
+                            bundle.putString("type","cook")
                         }
                     }
+                    var intent = Intent(itemView.context,ShowDetailActivity::class.java)
+                    intent.putExtra("bundle",bundle)
+                    itemView.context.startActivity(intent)
                     dialogInterface.dismiss()
                 }
                 dialog_list.show()

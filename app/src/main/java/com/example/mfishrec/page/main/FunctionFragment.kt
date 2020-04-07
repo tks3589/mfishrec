@@ -1,4 +1,4 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.main
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.CAMERA
@@ -9,13 +9,16 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.example.mfishrec.page.camera.CameraxActivity
+import com.example.mfishrec.page.crop.CropResultActivity
+import com.example.mfishrec.R
+import com.example.mfishrec.page.container.ShowActivity
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.fragment_function.*
 import java.io.File
@@ -91,7 +94,7 @@ class FunctionFragment : Fragment(){
     fun handleCropResult(result:Intent){
         var resultUri = UCrop.getOutput(result)
         if(resultUri!=null){
-            CropResultActivity.startWithUri(context!!,resultUri)
+            CropResultActivity.startWithUri(context!!, resultUri)
         }else{
             Toast.makeText(context,"Cannot retrieve cropped image",Toast.LENGTH_SHORT).show()
         }
@@ -108,14 +111,16 @@ class FunctionFragment : Fragment(){
     fun openGuide(){
         var bundle = Bundle()
         bundle.putString("type","guide")
-        var intent = Intent(context,ShowActivity::class.java)
+        var intent = Intent(context, ShowActivity::class.java)
         intent.putExtra("bundle",bundle)
         startActivity(intent)
     }
 
     fun openCameraX(){
         if(context!!.hasPermission(CAMERA)){
-            startActivityForResult(Intent(context,CameraxActivity::class.java), GET_PHOTO)
+            startActivityForResult(Intent(context, CameraxActivity::class.java),
+                GET_PHOTO
+            )
         }else{
             requestPermissions(
                 arrayOf(
@@ -137,7 +142,9 @@ class FunctionFragment : Fragment(){
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
             }
 
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"),GET_GALLERY)
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"),
+                GET_GALLERY
+            )
 
         }else{
             requestPermissions(

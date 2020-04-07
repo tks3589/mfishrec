@@ -1,4 +1,4 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
+import com.example.mfishrec.R
 import com.example.mfishrec.adapter.MainPageAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.settings_menu,menu)
+        menuInflater.inflate(R.menu.menu_settings,menu)
         return true
     }
 

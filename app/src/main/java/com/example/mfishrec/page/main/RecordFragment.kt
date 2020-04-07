@@ -1,4 +1,4 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.main
 
 import android.content.Intent
 import android.net.Uri
@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mfishrec.R
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
+import com.example.mfishrec.page.container.ShowActivity
 import kotlinx.android.synthetic.main.fragment_record.*
-import kotlinx.android.synthetic.main.record_item.view.*
+import kotlinx.android.synthetic.main.item_record.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,9 +68,19 @@ class RecordFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             return when(viewType){
                 TYPE_NORMAL -> {
-                    return RecordHolder(LayoutInflater.from(parent.context).inflate(R.layout.record_item,parent,false))
+                    return RecordHolder(
+                        LayoutInflater.from(
+                            parent.context
+                        ).inflate(R.layout.item_record, parent, false)
+                    )
                 }else -> {
-                    return EmptyDataHolder(LayoutInflater.from(parent.context).inflate(R.layout.empty_item,parent,false))
+                    return EmptyDataHolder(
+                        LayoutInflater.from(parent.context).inflate(
+                            R.layout.item_empty,
+                            parent,
+                            false
+                        )
+                    )
                 }
             }
         }
@@ -106,7 +118,7 @@ class RecordFragment : Fragment() {
             bundle.putString("type","record")
             bundle.putSerializable("record",record)
 
-            var intent = Intent(context,ShowActivity::class.java)
+            var intent = Intent(context, ShowActivity::class.java)
             intent.putExtra("bundle",bundle)
             startActivity(intent)
         }

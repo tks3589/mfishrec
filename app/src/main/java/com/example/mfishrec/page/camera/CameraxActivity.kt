@@ -1,13 +1,11 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.camera
 
 import android.app.Activity
 import android.graphics.Matrix
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.util.Rational
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView
@@ -15,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.lifecycle.LifecycleOwner
+import com.example.mfishrec.R
 import kotlinx.android.synthetic.main.activity_camerax.*
 import java.io.File
 import java.lang.Exception

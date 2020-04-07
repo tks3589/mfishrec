@@ -9,15 +9,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mfishrec.R
-import com.example.mfishrec.RecordFragment
+import com.example.mfishrec.page.main.RecordFragment
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
-import kotlinx.android.synthetic.main.record_detail_item.view.*
+import kotlinx.android.synthetic.main.item_record_detail.view.*
 
 class RecordDetailAdapter(val context: Context, var record:Record) : RecyclerView.Adapter<RecordDetailAdapter.RecordDetailHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordDetailHolder {
-        return RecordDetailHolder(LayoutInflater.from(parent.context).inflate(R.layout.record_detail_item,parent,false))
+        return RecordDetailHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_record_detail,parent,false))
     }
 
     override fun getItemCount(): Int {

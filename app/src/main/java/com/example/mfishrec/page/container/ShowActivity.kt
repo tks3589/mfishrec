@@ -1,9 +1,10 @@
-package com.example.mfishrec
+package com.example.mfishrec.page.container
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mfishrec.R
 import com.example.mfishrec.adapter.GuideAdapter
 import com.example.mfishrec.adapter.RecordDetailAdapter
 import com.example.mfishrec.data.Record
@@ -71,8 +72,8 @@ class ShowActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         guideAdapter?.let {
             it.stopListening()
         }

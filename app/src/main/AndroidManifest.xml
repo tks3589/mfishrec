@@ -15,18 +15,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ShowActivity"
+            android:name=".page.container.ShowDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/OtherTheme"/>
         <activity
-            android:name=".CameraxActivity"
+            android:name=".page.container.ShowActivity"
             android:screenOrientation="portrait"
             android:theme="@style/OtherTheme" />
         <activity
-            android:name=".CropResultActivity"
+            android:name=".page.camera.CameraxActivity"
             android:screenOrientation="portrait"
             android:theme="@style/OtherTheme" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".page.crop.CropResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/OtherTheme" />
+        <activity android:name=".page.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

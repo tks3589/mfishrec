@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.mfishrec.FunctionFragment
+import com.example.mfishrec.page.main.FunctionFragment
 import com.example.mfishrec.R
-import com.example.mfishrec.RecordFragment
+import com.example.mfishrec.page.main.RecordFragment
 
 class MainPageAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
