@@ -55,6 +55,8 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                     when(i){
                         0 -> {
                             bundle.putString("type","description")
+                            bundle.putString("imgurl",model.imgurl)
+                            bundle.putString("description",model.description)
                         }
                         1 -> {
                             bundle.putString("type","price")
@@ -63,6 +65,7 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                             bundle.putString("type","cook")
                         }
                     }
+                    bundle.putString("name",model.name)
                     var intent = Intent(itemView.context,ShowDetailActivity::class.java)
                     intent.putExtra("bundle",bundle)
                     itemView.context.startActivity(intent)

@@ -127,7 +127,7 @@ class CropResultActivity : AppCompatActivity() {
                     Log.d("OK:",responseData)
                     val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
                     val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(responseData, listType)
-                    insertRecord()
+                    responseData?.let { insertRecord(it) }
 
                     var alertBuilder = AlertDialog.Builder(this@CropResultActivity)
                     alertBuilder.setCancelable(false)
@@ -163,12 +163,12 @@ class CropResultActivity : AppCompatActivity() {
         })
     }
 
-    private fun insertRecord(){
+    private fun insertRecord(result:String){
         Thread {
             val database = RecDatabase.getInstance(this)
             val sdf_date = SimpleDateFormat("yyyy/MM/dd")
             val sdf_time = SimpleDateFormat("HH:mm:ss")
-            val record = Record(callbackUri!!.toString(), sdf_date.format(Date()), sdf_time.format(Date()))
+            val record = Record(callbackUri!!.toString(), sdf_date.format(Date()), sdf_time.format(Date()),result)
             database?.recordDao()?.insert(record)
             RecordFragment.instance.loadDB()
         }.start()

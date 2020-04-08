@@ -26,7 +26,7 @@ class RecordDetailAdapter(val context: Context, var record:Record) : RecyclerVie
 
     override fun onBindViewHolder(holder: RecordDetailHolder, position: Int) {
         holder.imageView.setImageURI(Uri.parse(record.imguri))
-        holder.dataText.text = record.date+" "+record.time
+        holder.dataText.text = record.date+" "+record.time+"\n\n"+record.result
         holder.deleteButton.setOnClickListener {
             AlertDialog.Builder(context)
                 .setMessage("是否刪除這筆紀錄？")

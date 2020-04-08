@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.example.mfishrec.R
+import com.example.mfishrec.page.detail.DescriptionFragment
 import kotlinx.android.synthetic.main.activity_show_detail.*
 
 class ShowDetailActivity : AppCompatActivity() {
@@ -14,6 +15,9 @@ class ShowDetailActivity : AppCompatActivity() {
 
         var bundle = intent.getBundleExtra("bundle")
         var type = bundle.getString("type")
+        var name = bundle.getString("name")
+
+        val transaction = supportFragmentManager.beginTransaction()
 
         setSupportActionBar(toolbar)
         var actionBar = supportActionBar
@@ -22,13 +26,22 @@ class ShowDetailActivity : AppCompatActivity() {
             actionBar.setDisplayHomeAsUpEnabled(true)
             when(type){
                 "description" -> {
-                    actionBar.title = "Description"
+                    actionBar.title = "Description : $name"
+                    var imgurl = bundle.getString("imgurl")
+                    var description = bundle.getString("description")
+                    var detailBundel = Bundle()
+                    detailBundel.putString("imgurl",imgurl)
+                    detailBundel.putString("description",description)
+                    var fragment = DescriptionFragment.instance
+                    fragment.arguments = detailBundel
+                    transaction.add(R.id.fragment_container,fragment)
+                    transaction.commit()
                 }
                 "price" -> {
-                    actionBar.title = "Price"
+                    actionBar.title = "Price : $name"
                 }
                 "cook" -> {
-                    actionBar.title = "Cook"
+                    actionBar.title = "Cook : $name"
                 }
                 else -> {
 
