@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.settings -> {
-                val mode = arrayOf("裁剪辨識","直接辨識")
+                val mode = arrayOf("手動裁切","自動裁切")
                 var alertBuilder = AlertDialog.Builder(this)
-                alertBuilder.setTitle("模式")
+                alertBuilder.setTitle("辨識模式")
                 alertBuilder
                     .setSingleChoiceItems(mode,0) { dialogInterface, i ->
                         Log.d("mode",i.toString())

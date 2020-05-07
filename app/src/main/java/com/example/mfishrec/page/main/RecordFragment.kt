@@ -1,14 +1,19 @@
 package com.example.mfishrec.page.main
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.mfishrec.R
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
@@ -96,7 +101,15 @@ class RecordFragment : Fragment() {
             when(holder){
                 is RecordHolder -> {
                     var model = records?.get(position)
-                    holder.imageView.setImageURI(Uri.parse(model?.imguri))
+                    holder.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                    //var bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, Uri.parse(model?.imguri))
+                    //holder.imageView.setImageBitmap(bitmap)
+                    //holder.imageView.setImageURI(Uri.parse(model?.imguri))
+                    Glide.with(context!!)
+                        .load(Uri.parse(model?.imguri))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontAnimate()
+                        .into(holder.imageView)
                     holder.dateText.text = model?.date
                     holder.timeText.text = model?.time
                     holder.layout.setOnClickListener {
