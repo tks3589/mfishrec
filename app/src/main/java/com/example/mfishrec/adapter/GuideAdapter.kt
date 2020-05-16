@@ -2,6 +2,7 @@ package com.example.mfishrec.adapter
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -86,8 +87,11 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                                 }
                         }
                         else -> {
-                            bundle.putString("type","cook")
-                            toPage(bundle)
+                            /*bundle.putString("type","cook")
+                            toPage(bundle)*/
+                            var fish_name = model.name.substring(0,model.name.indexOf("(")).trim()
+                            var menuUrl = "https://cookpad.com/tw/搜尋/$fish_name"  //https://icook.tw/search/$fish_name
+                            itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(menuUrl)))
                         }
                     }
                     dialogInterface.dismiss()
