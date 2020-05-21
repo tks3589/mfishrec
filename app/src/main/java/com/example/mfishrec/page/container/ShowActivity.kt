@@ -1,13 +1,18 @@
 package com.example.mfishrec.page.container
 
+import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mfishrec.R
 import com.example.mfishrec.adapter.GuideAdapter
+import com.example.mfishrec.adapter.RecResultAdapter
 import com.example.mfishrec.adapter.RecordDetailAdapter
 import com.example.mfishrec.data.Record
+import com.example.mfishrec.lib.Converter
+import com.example.mfishrec.lib.ToastUtil
 import com.example.mfishrec.model.GuideModel
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_show.*
 
 class ShowActivity : AppCompatActivity() {
     private var guideAdapter: GuideAdapter? = null
+    private var dialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +56,37 @@ class ShowActivity : AppCompatActivity() {
                     recyclerview.adapter = RecordDetailAdapter(this, model as Record)
                 }
                 else -> {
+                    dialog = ProgressDialog.show(this,"抓取資料中","請稍候...")
                     var name = bundle.getString("name")
                     var score = bundle.getFloat("score")
                     var rank = bundle.getInt("rank")
-                    actionBar.title = name
+                    actionBar.title = "Result"
+                    //load this fish guide and price data -> bind to recycler adapter
+                    var instance = FirebaseFirestore.getInstance()
+                    instance.collection("items")
+                        .whereEqualTo("id",rank)
+                        .limit(1).get().addOnCompleteListener { task ->
+                            if(task.isSuccessful){
+                                var fishItem = task.result?.documents?.get(0)?.data?.let {
+                                    Converter.convertGuide(it)
+                                }
+                                instance.collection("price")
+                                    .document(rank.toString()).get().addOnCompleteListener { task ->
+                                        if(task.isSuccessful){
+                                            var fishPrice = task.result?.data?.let {
+                                                Converter.convertPrice(it)
+                                            }
+                                            dialog?.dismiss()
+                                            if(fishItem!=null && fishPrice!=null)
+                                                recyclerview.adapter = RecResultAdapter(this,fishItem,fishPrice)
+                                        }else{
+                                            ToastUtil.loadDataErrorToast(this)
+                                        }
+                                    }
+                            }else{
+                                ToastUtil.loadDataErrorToast(this)
+                            }
+                        }
                 }
             }
         }

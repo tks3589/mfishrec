@@ -4,7 +4,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.mfishrec.R
+import com.example.mfishrec.lib.Converter
+import com.example.mfishrec.lib.ToastUtil
 import com.example.mfishrec.page.container.ShowDetailActivity
 import com.example.mfishrec.model.GuideModel
-import com.example.mfishrec.model.PriceModel
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -77,18 +77,19 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                             FirebaseFirestore.getInstance()
                                 .collection("price")
                                 .document(model.id.toString())
-                                .get().addOnSuccessListener {
-                                    //Log.d("guideAdapter","${it.data}")
-                                    dialog?.dismiss()
-                                    val data = it.data?.let { it1 -> convertPrice(it1) }
-                                    bundle.putParcelableArrayList("data",data)
-                                    //Log.d("guideAdapter","${data?.size}")
-                                    toPage(bundle)
+                                .get().addOnCompleteListener { task ->
+                                    if(task.isSuccessful){
+                                        dialog?.dismiss()
+                                        val data = task.result?.data?.let { it1 -> Converter.convertPrice(it1) }
+                                        bundle.putParcelableArrayList("data",data)
+                                        toPage(bundle)
+                                    }else{
+                                        dialog?.dismiss()
+                                        ToastUtil.loadDataErrorToast(itemView.context)
+                                    }
                                 }
                         }
                         else -> {
-                            /*bundle.putString("type","cook")
-                            toPage(bundle)*/
                             var fish_name = model.name.substring(0,model.name.indexOf("(")).trim()
                             var menuUrl = "https://cookpad.com/tw/搜尋/$fish_name"  //https://icook.tw/search/$fish_name
                             itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(menuUrl)))
@@ -103,30 +104,6 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
             var intent = Intent(itemView.context,ShowDetailActivity::class.java)
             intent.putExtra("bundle",bundle)
             itemView.context.startActivity(intent)
-        }
-        fun convertPrice(map: Map<String,Any>):ArrayList<PriceModel>{
-            var sortedMap = map.toSortedMap(compareByDescending { it })
-            var data = arrayListOf<PriceModel>()
-            sortedMap.forEach {(date,allValue) ->
-                //Log.d("guideAdapter","$date : $allValue")
-                val marketValue = allValue as Map<String,Any>
-                marketValue.forEach{(market,fishAll) ->
-                    //Log.d("guideAdapter","$date : $market : $fishAll")
-                    val fishAllValue = fishAll as Map<String,Any>
-                    fishAllValue.forEach{(fish,fishDetail) ->
-                        //Log.d("guideAdapter","$date : $market : $fish : $fishDetail")
-                        val fishDetailValue = fishDetail as Map<String,Any>
-                        val id = fishDetailValue.get("id") as Long
-                        val up = fishDetailValue.get("up") as Double
-                        val mid = fishDetailValue.get("mid") as Double
-                        val down = fishDetailValue.get("down") as Double
-                        val avg = fishDetailValue.get("avg") as Double
-                        val count = fishDetailValue.get("count") as Double
-                        data.add(PriceModel(date,market,fish,id,up,mid,down,avg,count))
-                    }
-                }
-            }
-            return data
         }
     }
 }
