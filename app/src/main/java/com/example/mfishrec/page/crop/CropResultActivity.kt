@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,12 +22,18 @@ import androidx.appcompat.app.AlertDialog
 import com.example.mfishrec.R
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
+import com.example.mfishrec.lite.ClassifierModel
+import com.example.mfishrec.lite.ImageClassification
 import com.example.mfishrec.model.ResponseModel
 import com.example.mfishrec.page.container.ShowActivity
 import com.example.mfishrec.page.main.RecordFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_crop_result.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -40,6 +48,9 @@ class CropResultActivity : AppCompatActivity() {
 
     private var callbackUri: Uri? = null
     private var dialog: ProgressDialog? = null
+    private var imageClassification: ImageClassification? = null
+    private val MODEL_PATH = "mfish.tflite"
+    private val LABEL_PATH = "mfish_labels.txt"
 
     companion object {
         fun startWithUri(context: Context,uri: Uri){
@@ -87,11 +98,53 @@ class CropResultActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if(item?.itemId == R.id.menu_upload){
             dialog = ProgressDialog.show(this@CropResultActivity,"辨識中","請稍候...")
-            callbackUri?.let { Thread { uploadImg(it) }.start() }
+            if(checkNetworkState())
+                callbackUri?.let { Thread { uploadImg(it) }.start() }
+            else
+                callbackUri?.let { loadModule(it) }
         }else if(item?.itemId == android.R.id.home){
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun checkNetworkState():Boolean{
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        val isConnected: Boolean = activeNetwork?.isConnected == true
+        return isConnected
+    }
+
+    private fun loadModule(uri:Uri){
+        CoroutineScope(Dispatchers.IO).launch {
+            if(imageClassification == null) {
+                imageClassification = ImageClassification.create(
+                    classifierModel = ClassifierModel.FLOAT,
+                    assetManager = assets,
+                    modelPath = MODEL_PATH,
+                    labelPath = LABEL_PATH
+                )
+                Log.d("results","init")
+                detectObject(uri)
+            }else{
+                detectObject(uri)
+            }
+        }
+    }
+
+    private fun detectObject(uri:Uri){
+        CoroutineScope(Dispatchers.IO).launch {
+            var bitmap = MediaStore.Images.Media.getBitmap(contentResolver,uri)
+            bitmap = resizeBitmap(bitmap,299,299)
+            val results = async { imageClassification?.classifyImage(bitmap) }
+            Log.d("results",results.await().toString())
+            CoroutineScope(Dispatchers.Main).launch {
+                AlertDialog.Builder(this@CropResultActivity)
+                    .setMessage(results.await().toString())
+                    .create().show()
+            }
+            dialog?.dismiss()
+        }
     }
 
     fun uploadImg(uri: Uri){

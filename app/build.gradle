@@ -25,6 +25,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
 }
 
 repositories {
@@ -81,6 +85,9 @@ dependencies {
 
     //line-chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    //tensorflow lite
+    implementation 'org.tensorflow:tensorflow-lite:1.14.0'
 
 
 }
