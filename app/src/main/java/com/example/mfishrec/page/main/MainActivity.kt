@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.mfishrec.R
 import com.example.mfishrec.adapter.MainPageAdapter
+import com.example.mfishrec.data.Memory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -28,12 +30,18 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.settings -> {
-                val mode = arrayOf("手動裁切","自動裁切")
+                val mode = arrayOf("手動裁切","無裁切")
+                val key = "settings"
+                val settings = Memory.getData(this,key)
                 var alertBuilder = AlertDialog.Builder(this)
                 alertBuilder.setTitle("辨識模式")
                 alertBuilder
-                    .setSingleChoiceItems(mode,0) { dialogInterface, i ->
+                    .setSingleChoiceItems(mode,settings) { dialogInterface, i ->
                         Log.d("mode",i.toString())
+                        if(i != settings) {
+                            Memory.setData(this, key, i)
+                            Toast.makeText(this, "切換 ${mode[i]} 模式", Toast.LENGTH_SHORT).show()
+                        }
                         dialogInterface.dismiss()
                     }
                     .show()
