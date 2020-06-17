@@ -1,6 +1,8 @@
 package com.example.mfishrec.lib
 
+import android.util.Log
 import com.example.mfishrec.model.GuideModel
+import com.example.mfishrec.model.MenuModel
 import com.example.mfishrec.model.PriceModel
 
 class Converter {
@@ -34,6 +36,20 @@ class Converter {
                     }
                 }
             }
+            return data
+        }
+        fun convertMenu(map: Map<String,Any>):ArrayList<MenuModel>{
+            var sortedMap = map.toSortedMap(compareByDescending { it })
+            var data = arrayListOf<MenuModel>()
+            sortedMap.forEach { (name,allValue) ->
+                //Log.d("converter","$name : $allValue")
+                val cookValue = allValue as Map<String,Any>
+                val imgurl = cookValue["imgurl"] as String
+                val materials = cookValue["materials"] as ArrayList<String>
+                val steps = cookValue["steps"] as ArrayList<String>
+                data.add(MenuModel(name, imgurl, materials, steps))
+            }
+            //Log.d("converter","$data")
             return data
         }
     }

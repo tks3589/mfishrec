@@ -12,6 +12,9 @@ import com.example.mfishrec.R
 import com.example.mfishrec.page.main.RecordFragment
 import com.example.mfishrec.data.RecDatabase
 import com.example.mfishrec.data.Record
+import com.example.mfishrec.model.ResponseModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.item_record_detail.view.*
 
 class RecordDetailAdapter(val context: Context, var record:Record) : RecyclerView.Adapter<RecordDetailAdapter.RecordDetailHolder>(){
@@ -26,7 +29,13 @@ class RecordDetailAdapter(val context: Context, var record:Record) : RecyclerVie
 
     override fun onBindViewHolder(holder: RecordDetailHolder, position: Int) {
         holder.imageView.setImageURI(Uri.parse(record.imguri))
-        holder.dataText.text = record.date+" "+record.time+"\n\n"+record.result
+        val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
+        val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(record.result, listType)
+        var result = ""
+        for(i in 0 until responseDataList.size)
+            result += "No:${responseDataList[i].rank}(${responseDataList[i].name}) Score:${responseDataList[i].score} \n\n "
+        holder.dataText.text = record.date+" "+record.time+"\n\n"+result.trim()
+        //holder.dataText.text = record.date+" "+record.time+"\n\n"+record.result
         holder.deleteButton.setOnClickListener {
             AlertDialog.Builder(context)
                 .setMessage("是否刪除這筆紀錄？")

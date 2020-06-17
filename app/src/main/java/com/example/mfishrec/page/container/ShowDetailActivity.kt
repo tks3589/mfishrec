@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.example.mfishrec.R
+import com.example.mfishrec.model.MenuModel
 import com.example.mfishrec.model.PriceModel
+import com.example.mfishrec.page.detail.CookFragment
 import com.example.mfishrec.page.detail.DescriptionFragment
 import com.example.mfishrec.page.detail.PriceFragment
 import kotlinx.android.synthetic.main.activity_show_detail.*
@@ -51,6 +53,13 @@ class ShowDetailActivity : AppCompatActivity() {
                 }
                 "cook" -> {
                     actionBar.title = "Cook : $name"
+                    var data = bundle.getParcelableArrayList<MenuModel>("data")
+                    var menuBundel = Bundle()
+                    menuBundel.putParcelableArrayList("data",data)
+                    var fragment = CookFragment.instance
+                    fragment.arguments = menuBundel
+                    transaction.add(R.id.fragment_container,fragment)
+                    transaction.commit()
                 }
                 else -> {
 

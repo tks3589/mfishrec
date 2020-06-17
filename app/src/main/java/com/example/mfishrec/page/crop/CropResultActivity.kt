@@ -137,13 +137,15 @@ class CropResultActivity : AppCompatActivity() {
             var bitmap = MediaStore.Images.Media.getBitmap(contentResolver,uri)
             bitmap = resizeBitmap(bitmap,299,299)
             val results = async { imageClassification?.classifyImage(bitmap) }
-            Log.d("results",results.await().toString())
+            //Log.d("results",results.await().toString())
             CoroutineScope(Dispatchers.Main).launch {
+                var result = results.await().toString()
+                result = result.substring(1,result.length-2)
                 AlertDialog.Builder(this@CropResultActivity)
-                    .setMessage(results.await().toString())
+                    .setMessage(result)
                     .create().show()
+                dialog?.dismiss()
             }
-            dialog?.dismiss()
         }
     }
 

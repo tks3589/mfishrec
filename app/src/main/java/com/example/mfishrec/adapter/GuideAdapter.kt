@@ -90,9 +90,25 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                                 }
                         }
                         else -> {
-                            var fish_name = model.name.substring(0,model.name.indexOf("(")).trim()
+                            /*var fish_name = model.name.substring(0,model.name.indexOf("(")).trim()
                             var menuUrl = "https://cookpad.com/tw/搜尋/$fish_name"  //https://icook.tw/search/$fish_name
-                            itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(menuUrl)))
+                            itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(menuUrl)))*/
+                            dialog = ProgressDialog.show(itemView.context,"抓取資料中","請稍候...")
+                            bundle.putString("type","cook")
+                            FirebaseFirestore.getInstance()
+                                .collection("menu")
+                                .document("23")
+                                .get().addOnCompleteListener { task ->
+                                    if(task.isSuccessful){
+                                        dialog?.dismiss()
+                                        val data = task.result?.data?.let { it1 -> Converter.convertMenu(it1) }
+                                        bundle.putParcelableArrayList("data",data)
+                                        toPage(bundle)
+                                    }else{
+                                        dialog?.dismiss()
+                                        ToastUtil.loadDataErrorToast(itemView.context)
+                                    }
+                                }
                         }
                     }
                     dialogInterface.dismiss()

@@ -6,6 +6,6 @@ data class Recognizable(
     var confidence: Float = 0F
 ) {
     override fun toString(): String {
-        return "Label Id = $id, Name = $name, Confidence = $confidence"
+        return "Label Id = $id, Name = $name, Confidence = $confidence \n\n"
     }
 }
