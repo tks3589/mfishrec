@@ -200,15 +200,19 @@ class CropResultActivity : AppCompatActivity() {
                     alert.listView.setOnItemClickListener { _, _, i, _ ->
                         var model = responseDataList[i]
                         Log.d("alert",dataArr[i])
-                        var intent = Intent(this@CropResultActivity,
-                            ShowActivity::class.java)
-                        var bundle = Bundle()
-                        bundle.putString("type","crop_result")
-                        bundle.putInt("rank",model.rank)
-                        bundle.putString("name",model.name)
-                        bundle.putFloat("score",model.score)
-                        intent.putExtra("bundle",bundle)
-                        startActivity(intent)
+                        if(model.rank!=99) {
+                            var intent = Intent(
+                                this@CropResultActivity,
+                                ShowActivity::class.java
+                            )
+                            var bundle = Bundle()
+                            bundle.putString("type", "crop_result")
+                            bundle.putInt("rank", model.rank)
+                            bundle.putString("name", model.name)
+                            bundle.putFloat("score", model.score)
+                            intent.putExtra("bundle", bundle)
+                            startActivity(intent)
+                        }
                     }
 
                     alert.show()

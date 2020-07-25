@@ -97,7 +97,7 @@ class GuideAdapter(options:FirestoreRecyclerOptions<GuideModel>) : FirestoreRecy
                             bundle.putString("type","cook")
                             FirebaseFirestore.getInstance()
                                 .collection("menu")
-                                .document("23")
+                                .document(model.id.toString())
                                 .get().addOnCompleteListener { task ->
                                     if(task.isSuccessful){
                                         dialog?.dismiss()

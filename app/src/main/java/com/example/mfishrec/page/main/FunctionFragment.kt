@@ -1,7 +1,6 @@
 package com.example.mfishrec.page.main
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.CAMERA
+import android.Manifest.permission.*
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -125,14 +124,15 @@ class FunctionFragment : Fragment(){
     }
 
     fun openCameraX(){
-        if(context!!.hasPermission(CAMERA)){
+        if(context!!.hasPermission(CAMERA, ACCESS_FINE_LOCATION)){
             startActivityForResult(Intent(context, CameraxActivity::class.java),
                 GET_PHOTO
             )
         }else{
             requestPermissions(
                 arrayOf(
-                    CAMERA
+                    CAMERA,
+                    ACCESS_FINE_LOCATION
                 )
                 ,
                 REQUEST_CAMERA
@@ -141,7 +141,7 @@ class FunctionFragment : Fragment(){
     }
 
     fun pickFromGallery(){
-        if(context!!.hasPermission(READ_EXTERNAL_STORAGE)){
+        if(context!!.hasPermission(READ_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION)){
             var intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 .setType("image/*")
                 .addCategory(Intent.CATEGORY_OPENABLE)
@@ -157,7 +157,8 @@ class FunctionFragment : Fragment(){
         }else{
             requestPermissions(
                 arrayOf(
-                    READ_EXTERNAL_STORAGE
+                    READ_EXTERNAL_STORAGE,
+                    ACCESS_FINE_LOCATION
                 )
                 ,
                 REQUEST_READ
@@ -171,9 +172,11 @@ class FunctionFragment : Fragment(){
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == REQUEST_READ && context!!.hasPermission(READ_EXTERNAL_STORAGE)){
+        if(requestCode == REQUEST_READ && context!!.hasPermission(READ_EXTERNAL_STORAGE,
+                ACCESS_FINE_LOCATION)){
             pickFromGallery()
-        }else if(requestCode == REQUEST_CAMERA && context!!.hasPermission(CAMERA)){
+        }else if(requestCode == REQUEST_CAMERA && context!!.hasPermission(CAMERA,
+                ACCESS_FINE_LOCATION)){
             openCameraX()
         }
     }
