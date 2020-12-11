@@ -35,6 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -98,10 +100,10 @@ class CropResultActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if(item?.itemId == R.id.menu_upload){
             dialog = ProgressDialog.show(this@CropResultActivity,"辨識中","請稍候...")
-            if(checkNetworkState())
+            /*if(checkNetworkState())
                 callbackUri?.let { Thread { uploadImg(it) }.start() }
-            else
-                callbackUri?.let { loadModule(it) }
+            else*/
+            callbackUri?.let { loadModule(it) }
         }else if(item?.itemId == android.R.id.home){
             onBackPressed()
         }
@@ -141,9 +143,50 @@ class CropResultActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.Main).launch {
                 var result = results.await().toString()
                 result = result.substring(1,result.length-2)
-                AlertDialog.Builder(this@CropResultActivity)
-                    .setMessage(result)
-                    .create().show()
+                val splitList = result.split("@").toTypedArray()
+
+                val alert = AlertDialog.Builder(this@CropResultActivity)
+                    .setItems(splitList,null)
+                    .create()
+
+                var rootArray = JSONArray()
+                for(i in splitList.indices){
+                    var splitList2 = splitList[i].split(",")
+                    var rootObject= JSONObject()
+                    if(i != 0) {
+                        rootObject.put("rank", splitList2[1].split("=")[1].trim().toInt())
+                        rootObject.put("name", splitList2[2].split("=")[1].trim())
+                        rootObject.put("score", splitList2[3].split("=")[1].trim())
+                    }else{
+                        rootObject.put("rank", splitList2[0].split("=")[1].trim().toInt())
+                        rootObject.put("name", splitList2[1].split("=")[1].trim())
+                        rootObject.put("score", splitList2[2].split("=")[1].trim())
+                    }
+                    rootArray.put(rootObject)
+                }
+                val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
+                val responseData = rootArray.toString()
+                val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(responseData , listType)
+                insertRecord(responseData)
+
+                alert.listView.setOnItemClickListener { _, _, i, _ ->
+                    val model = responseDataList[i]
+                    if(model.rank!=99) {
+                        var intent = Intent(
+                            this@CropResultActivity,
+                            ShowActivity::class.java
+                        )
+                        var bundle = Bundle()
+                        bundle.putString("type", "crop_result")
+                        bundle.putInt("rank", model.rank)
+                        bundle.putString("name", model.name)
+                        bundle.putFloat("score", model.score)
+                        intent.putExtra("bundle", bundle)
+                        startActivity(intent)
+                    }
+                }
+
+                alert.show()
                 dialog?.dismiss()
             }
         }
@@ -223,14 +266,19 @@ class CropResultActivity : AppCompatActivity() {
     }
 
     private fun insertRecord(result:String){
-        Thread {
-            val database = RecDatabase.getInstance(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            val database = RecDatabase.getInstance(this@CropResultActivity)
             val sdf_date = SimpleDateFormat("yyyy/MM/dd")
             val sdf_time = SimpleDateFormat("HH:mm:ss")
-            val record = Record(callbackUri!!.toString(), sdf_date.format(Date()), sdf_time.format(Date()),result)
+            val record = Record(
+                callbackUri!!.toString(),
+                sdf_date.format(Date()),
+                sdf_time.format(Date()),
+                result
+            )
             database?.recordDao()?.insert(record)
             RecordFragment.instance.loadDB()
-        }.start()
+        }
     }
 
     private fun resizeBitmap(bitmap:Bitmap, rwidth:Int, rheight:Int) : Bitmap{
