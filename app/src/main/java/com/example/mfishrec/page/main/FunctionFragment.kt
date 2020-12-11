@@ -55,6 +55,8 @@ class FunctionFragment : Fragment(){
         button_guide.setOnClickListener {
             openGuide()
         }
+        val pInfo = context!!.packageManager.getPackageInfo(context!!.packageName,0)
+        version_textview.text = pInfo.versionName
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
