@@ -34,7 +34,7 @@ class GpsMarketUtil {
             "新營" to  Location("新營"),
             "岡山" to  Location("岡山")
         )
-        fun getClosestMarket(context: Context,fishPrice:ArrayList<PriceModel>,location: Location):Array<Any>{
+        fun getClosestMarket(context: Context,fishPrice:ArrayList<PriceModel>,location: Location?):Array<Any>{
             var closesMarket = fishPrice[0].market
             if(location == null)
                 return arrayOf(0,closesMarket)

@@ -73,7 +73,7 @@ class CameraxActivity : AppCompatActivity() ,LifecycleOwner{
         capture_button.setOnClickListener {
 //            val file = File(externalMediaDirs.first(),
 //                "${System.currentTimeMillis()}.jpg")
-            val file = File(cacheDir,"CameraxPicture.jpg")
+            val file = File(cacheDir,"CameraxPicture_${System.currentTimeMillis()}.jpg")
 
             imageCapture.takePicture(file, executor,
                 object : ImageCapture.OnImageSavedListener {

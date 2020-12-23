@@ -126,7 +126,7 @@ class FunctionFragment : Fragment(){
     }
 
     fun openCameraX(){
-        if(context!!.hasPermission(CAMERA, ACCESS_FINE_LOCATION)){
+        if(context!!.hasPermission(CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)){
             startActivityForResult(Intent(context, CameraxActivity::class.java),
                 GET_PHOTO
             )
@@ -134,7 +134,8 @@ class FunctionFragment : Fragment(){
             requestPermissions(
                 arrayOf(
                     CAMERA,
-                    ACCESS_FINE_LOCATION
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
                 )
                 ,
                 REQUEST_CAMERA
@@ -143,7 +144,7 @@ class FunctionFragment : Fragment(){
     }
 
     fun pickFromGallery(){
-        if(context!!.hasPermission(READ_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION)){
+        if(context!!.hasPermission(READ_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)){
             var intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 .setType("image/*")
                 .addCategory(Intent.CATEGORY_OPENABLE)
@@ -160,7 +161,8 @@ class FunctionFragment : Fragment(){
             requestPermissions(
                 arrayOf(
                     READ_EXTERNAL_STORAGE,
-                    ACCESS_FINE_LOCATION
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
                 )
                 ,
                 REQUEST_READ
@@ -175,10 +177,10 @@ class FunctionFragment : Fragment(){
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == REQUEST_READ && context!!.hasPermission(READ_EXTERNAL_STORAGE,
-                ACCESS_FINE_LOCATION)){
+                ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)){
             pickFromGallery()
         }else if(requestCode == REQUEST_CAMERA && context!!.hasPermission(CAMERA,
-                ACCESS_FINE_LOCATION)){
+                ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)){
             openCameraX()
         }
     }

@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.item_fishimg.view.*
 import kotlinx.android.synthetic.main.item_price_1.view.*
 import kotlinx.android.synthetic.main.item_price_2.view.*
 
-class RecResultAdapter(val context:Context,val fishItem:GuideModel,val fishPrice:ArrayList<PriceModel>,val currentLocation:Location): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecResultAdapter(val context:Context,val fishItem:GuideModel,val fishPrice:ArrayList<PriceModel>,val currentLocation:Location?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_FISH_IMG = 10
     private val TYPE_PRICE_1 = 11
     private val TYPE_PRICE_2 = 12

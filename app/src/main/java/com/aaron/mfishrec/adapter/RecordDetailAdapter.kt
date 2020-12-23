@@ -14,6 +14,7 @@ import com.aaron.mfishrec.page.main.RecordFragment
 import com.aaron.mfishrec.data.RecDatabase
 import com.aaron.mfishrec.data.Record
 import com.aaron.mfishrec.model.ResponseModel
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.item_record_detail.view.*
@@ -38,7 +39,8 @@ class RecordDetailAdapter(val context: Context, var record:Record) : RecyclerVie
             val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
             contentResolver.takePersistableUriPermission(uri, takeFlags)
         }
-        holder.imageView.setImageURI(uri)
+       // holder.imageView.setImageURI(uri)
+        Glide.with(context).load(Uri.parse(uri.toString())).into(holder.imageView)
         val listType = object : TypeToken<ArrayList<ResponseModel>>(){}.type
         val responseDataList = Gson().fromJson<ArrayList<ResponseModel>>(record.result, listType)
         var result = ""
