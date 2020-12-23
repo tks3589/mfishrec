@@ -1,2 +1,3 @@
 include ':app',':ucrop'
+include ':model_assets'
 rootProject.name='mfishrec'

@@ -5,20 +5,32 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    signingConfigs {
+        release {
+            storeFile file('/Users/aaronchen/AndroidProjects/mfishrec_release/mfish_release.jks')
+            storePassword 'ss131719'
+            keyAlias 'mfish_rec'
+            keyPassword 'ss131719'
+        }
+    }
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
     defaultConfig {
-        applicationId "com.example.mfishrec"
+        applicationId "com.aaron.mfishrec"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 10000
         versionName "1.0.0"
+
+        assetPacks = [":model_assets"]
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -46,6 +58,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.play:core:1.9.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
